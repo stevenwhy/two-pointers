@@ -1,3 +1,5 @@
+import kotlin.math.absoluteValue
+
 fun main() {
     println("Find the pair which adds up to a sum:")
     println("${pairWithTargetSum(6, intArrayOf(1,2,3,4,6))} expected [1,3]")
@@ -25,6 +27,93 @@ fun main() {
     println("Find Triples Which Sum to 0:")
     println("${findAllUniqueTripletsSumToZero(intArrayOf(-3, 0, 1, 2, -1, 1, -2))} expected [-3, 1, 2], [-2, 0, 2], [-2, 1, 1], [-1, 0, 1]")
     println("${findAllUniqueTripletsSumToZero(intArrayOf(-5, 2, -1, -2, 3))} expected [-5, 2, 3], [-2, -1, 3]")
+
+    println("Find sum of triples closest to K:")
+    println("${findClosestTripletSumtoK(2,intArrayOf(-2, 0, 1, 2))} expected 1")
+    println("${findClosestTripletSumtoK(1,intArrayOf(-3, -1, 1, 2))} expected 0")
+    println("${findClosestTripletSumtoK(100,intArrayOf(1,0,1,1))} expected 3")
+
+    println("Find count of triples whose sum is < K:")
+    println("${findCountOfTriplesSumLessThanK(3,intArrayOf(-1, 0, 2, 3))} expected 2")
+    println("${findCountOfTriplesSumLessThanK(5,intArrayOf(-1, 4, 2, 1, 3))} expected 4")
+
+    println("Find triples whose sum is < K:")
+    println("${findTriplesSumLessThanK(3,intArrayOf(-1, 0, 2, 3))} expected [-1, 0, 3], [-1, 0, 2]")
+    println("${findTriplesSumLessThanK(5,intArrayOf(-1, 4, 2, 1, 3))} expected [-1, 1, 4], [-1, 1, 3], [-1, 1, 2], [-1, 2, 3]")
+}
+
+/**
+ * Same as below but return the triples instead of count of them
+ */
+fun findTriplesSumLessThanK(k: Int, arr: IntArray): MutableList<Triple<Int,Int,Int>> {
+    val result: MutableList<Triple<Int,Int,Int>> = mutableListOf()
+
+    for(i in 0..arr.size-3) {
+        for(j in i+1 until arr.size)
+            for(l in j+1 until arr.size) {
+                if(arr[i] + arr[j] + arr[l] < k) result.add(Triple(arr[i],arr[j],arr[l]))
+            }
+    }
+    return result
+}
+/**
+ * Given an array arr of unsorted numbers and a target sum,
+ *   count all triplets in it such that arr(i) + arr(j) + arr(k) < target where i, j,
+ *   and k are three different indices.
+ * Write a function to return the count of such triplets.
+ */
+fun findCountOfTriplesSumLessThanK(k: Int, arr: IntArray): Int {
+    arr.sort()
+    var result = 0
+    if(arr.size < 3) return 0
+    if(arr.size == 3 && arr.sum() >= k) return 0
+    for(i in arr.indices) {
+        var left = i+1
+        var right = arr.size-1
+        while(left < right) {
+            val sum = arr[i] + arr[left] + arr[right]
+            if(sum >= k) {
+                right--
+            } else {
+                result += right-left
+                left++
+            }
+        }
+    }
+
+    return result
+}
+
+/**
+ * Given an array of unsorted numbers and a target number,
+ *   find a triplet in the array whose sum is as close to the target number as possible,
+ *   return the sum of the triplet.
+ *    If there are more than one such triplet,
+ *    return the sum of the triplet with the smallest sum.
+ */
+fun findClosestTripletSumtoK(target: Int, arr: IntArray): Int {
+
+    var result = Int.MAX_VALUE
+    arr.sort()
+
+    for(i in arr.indices) {
+        var left = i+1
+        var right = arr.size - 1
+        var sum = Int.MAX_VALUE
+        while(left < right) {
+            sum = arr[left] + arr[right] + arr[i]
+            if(sum == target) return sum
+            else if(sum > target) right--
+            else left++
+        }
+        if(sum != Int.MAX_VALUE) {
+            if(target.minus(result).absoluteValue > target.minus(sum).absoluteValue) {
+                result = sum
+            }
+        }
+    }
+
+    return result
 }
 
 /**
