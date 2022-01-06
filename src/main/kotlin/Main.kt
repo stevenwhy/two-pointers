@@ -21,6 +21,41 @@ fun main() {
     println("Square the numbers in a sorted array:")
     println("${squareAnArray(intArrayOf(-2, -1, 0, 2, 3))} expected 0, 1, 4, 4, 9")
     println("${squareAnArray(intArrayOf(-3, -1, 0, 1, 2))} expected 0 1 1 4 9")
+
+    println("Find Triples Which Sum to 0:")
+    println("${findAllUniqueTripletsSumToZero(intArrayOf(-3, 0, 1, 2, -1, 1, -2))} expected [-3, 1, 2], [-2, 0, 2], [-2, 1, 1], [-1, 0, 1]")
+    println("${findAllUniqueTripletsSumToZero(intArrayOf(-5, 2, -1, -2, 3))} expected [-5, 2, 3], [-2, -1, 3]")
+}
+
+/**
+ * Given an array of unsorted numbers, find all unique triplets in it that add up to zero.
+ */
+fun findAllUniqueTripletsSumToZero(arr: IntArray): MutableList<Triple<Int,Int,Int>> {
+    // We can first sort the array to make the problem easier
+    // Then we want to find 3 numbers X,Y,Z such that X + Y = -Z
+    //  sorted array makes it easier to skip repeats since we only want unique triples
+    val result: MutableList<Triple<Int,Int,Int>> = mutableListOf()
+    if(arr.size < 3) return result
+    val sorted = arr.sorted()
+
+    for(i in sorted.indices) {
+        if(i > 0 && sorted[i] == sorted[i-1]) continue
+
+        // search for pairs which sum to -arr[i]
+        var right = sorted.size - 1
+        var left = i+1
+        while(left < right) {
+            val sum = sorted[left] + sorted[right]
+            if(sum == -sorted[i]) {
+                result.add(Triple(sorted[i],sorted[left],sorted[right]))
+                right--
+                left++
+            } else if (sum > -sorted[i]) {
+                right--
+            } else left++
+        }
+    }
+    return result
 }
 
 /**
@@ -35,7 +70,6 @@ fun squareAnArray(arr: IntArray): MutableList<Int> {
     while(left != right) {
         val leftSquare = arr[left] * arr[left]
         val rightSquare = arr[right] * arr[right]
-        println("LeftSq=$leftSquare  RightSq=$rightSquare")
         if(rightSquare > leftSquare) {
             result[resultIndex] = rightSquare
             right--
