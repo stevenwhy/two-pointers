@@ -17,6 +17,36 @@ fun main() {
     println("${removeInstancesOfKInplace(2,intArrayOf(2,11))} expected 1")
     println("${removeInstancesOfKInplace(3,intArrayOf(3, 2, 3, 6, 3, 10, 9, 3))} expected 4")
     println("${removeInstancesOfKInplace(2,intArrayOf(2, 11, 2, 2, 1))} expected 2")
+
+    println("Square the numbers in a sorted array:")
+    println("${squareAnArray(intArrayOf(-2, -1, 0, 2, 3))} expected 0, 1, 4, 4, 9")
+    println("${squareAnArray(intArrayOf(-3, -1, 0, 1, 2))} expected 0 1 1 4 9")
+}
+
+/**
+ * Given a sorted array, create a new array
+ *   containing squares of all the number of the input array in the sorted order.
+ */
+fun squareAnArray(arr: IntArray): MutableList<Int> {
+    val result: MutableList<Int> = List(arr.size) { -1 }.toMutableList()
+    var left = 0
+    var right = arr.size-1
+    var resultIndex = arr.size-1
+    while(left != right) {
+        val leftSquare = arr[left] * arr[left]
+        val rightSquare = arr[right] * arr[right]
+        println("LeftSq=$leftSquare  RightSq=$rightSquare")
+        if(rightSquare > leftSquare) {
+            result[resultIndex] = rightSquare
+            right--
+        } else {
+            result[resultIndex] = leftSquare
+            left++
+        }
+        resultIndex--
+        if(right == left) result[resultIndex] = arr[left]*arr[left]
+    }
+    return result
 }
 
 /**
