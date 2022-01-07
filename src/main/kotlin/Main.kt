@@ -40,8 +40,44 @@ fun main() {
     println("Find triples whose sum is < K:")
     println("${findTriplesSumLessThanK(3,intArrayOf(-1, 0, 2, 3))} expected [-1, 0, 3], [-1, 0, 2]")
     println("${findTriplesSumLessThanK(5,intArrayOf(-1, 4, 2, 1, 3))} expected [-1, 1, 4], [-1, 1, 3], [-1, 1, 2], [-1, 2, 3]")
+
+    println("Subarrays with Product Less than a Target:")
+    println("${findSubarraysWhoseProductIsLessThanK(30,intArrayOf(2,5,3,10))} expected [2], [5], [2, 5], [3], [5, 3], [10]")
+    println("${findSubarraysWhoseProductIsLessThanK(50,intArrayOf(8, 2, 6, 5))} expected [8], [2], [8, 2], [6], [2, 6], [5], [6, 5] ")
+    println("${findSubarraysWhoseProductIsLessThanK(50,intArrayOf(55, 2, 6, 5))} expected [2], [6], [2, 6], [5], [6, 5] ")
 }
 
+/**
+ * Given an array with positive numbers and a target number,
+ *   find all of its contiguous subarrays whose product is less than the target number.
+ */
+fun findSubarraysWhoseProductIsLessThanK(k: Int, arr: IntArray): MutableList<List<Int>> {
+    val result: MutableList<List<Int>> = mutableListOf()
+    var left = 0
+    var right = 0
+    var product = arr[left]
+    val hashMap: HashMap<List<Int>,Int> = HashMap()
+    while(right < arr.size) {
+        if(product < k) {
+            if(left != right) {
+                hashMap.putIfAbsent(listOf(arr[left],arr[right]), 1)
+            }
+            hashMap.putIfAbsent(listOf(arr[left]), 1)
+            hashMap.putIfAbsent(listOf(arr[right]), 1)
+            right++
+            if(right < arr.size) product *= arr[right]
+        } else {
+            product /= arr[left]
+            if(right == left) {
+                right++
+                product *= arr[right]
+            }
+            left++
+        }
+    }
+    result.addAll(hashMap.keys)
+    return result
+}
 /**
  * Same as below but return the triples instead of count of them
  */
