@@ -52,8 +52,61 @@ fun main() {
     println("${dutchNationalFlagProblem(intArrayOf(2, 2, 1, 2))} expected 1 2 2 2")
     println("${dutchNationalFlagProblem(intArrayOf(0, 1, 0))} expected 0 0 1")
     println("${dutchNationalFlagProblem(intArrayOf(0, 1, 2,1,2,1,2,0))} expected 0 0 1 1 1 2 2 2")
+
+    println("Find quads whose sum equal to K:")
+    println("${findQuadsSumEqualToK(1, intArrayOf(4, 1, 2, -1, 1, -3))} expected [-3, -1, 1, 4], [-3, 1, 1, 2]")
+    println("${findQuadsSumEqualToK(2, intArrayOf(2, 0, -1, 1, -2, 2))} expected [-2, 0, 2, 2], [-1, 0, 1, 2]")
 }
 
+/**
+ * Given an array of unsorted numbers and a target number,
+ *   find all unique quadruplets in it, whose sum is equal to the target number.
+ */
+fun findQuadsSumEqualToK(k:Int,arr:IntArray): MutableList<List<Int>> {
+    val result: MutableList<List<Int>> = mutableListOf()
+    arr.sort()
+    for(i in 0 until arr.size-3) {
+        if(i > 0 && arr[i] == arr[i-1]) continue
+
+        for(j in i+1 until arr.size-2) {
+            if(j > i+1 && arr[j] == arr[j-1]) continue
+
+            //start searching for pairs
+            var left = j + 1
+            var right = arr.size - 1
+            while(left < right) {
+                val sum = arr[i] + arr[j] + arr[left] + arr[right]
+                if(sum == k) {
+                    result.add(listOf(arr[i], arr[j], arr[left], arr[right]))
+                    left++
+                    right--
+                } else if(sum < k) left++
+                else right--
+            }
+        }
+    }
+    return result
+}
+fun findQuadsSumEqualToKBrute(k: Int, arr: IntArray): MutableList<List<Int>> {
+    val result: MutableList<List<Int>> = mutableListOf()
+    val hashMap: HashMap<List<Int>,Int> = HashMap()
+    if(arr.size < k) return result
+
+    for(a in 0 until arr.size-3) {
+        for(b in a+1 until arr.size-2) {
+            for(c in b+1 until arr.size - 1) {
+                for(d in c+1 until arr.size) {
+                    val sum = arr[a] + arr[b] + arr[c] + arr[d]
+                    if(sum == k) {
+                        hashMap.putIfAbsent(listOf(arr[a],arr[b],arr[c],arr[d]).sorted(),1)
+                    }
+                }
+            }
+        }
+    }
+    result.addAll(hashMap.keys)
+    return result
+}
 /**
  * Given an array containing 0s, 1s and 2s, sort the array in-place.
  * You should treat numbers of the array as objects, hence, we can’t count 0s, 1s, and 2s to recreate the array.
