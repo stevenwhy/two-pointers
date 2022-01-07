@@ -45,8 +45,41 @@ fun main() {
     println("${findSubarraysWhoseProductIsLessThanK(30,intArrayOf(2,5,3,10))} expected [2], [5], [2, 5], [3], [5, 3], [10]")
     println("${findSubarraysWhoseProductIsLessThanK(50,intArrayOf(8, 2, 6, 5))} expected [8], [2], [8, 2], [6], [2, 6], [5], [6, 5] ")
     println("${findSubarraysWhoseProductIsLessThanK(50,intArrayOf(55, 2, 6, 5))} expected [2], [6], [2, 6], [5], [6, 5] ")
+
+    println("Sort number array in place:")
+    println("${dutchNationalFlagProblem(intArrayOf(1, 0, 2, 1, 0))} expected 0 0 1 1 2")
+    println("${dutchNationalFlagProblem(intArrayOf(2, 2, 0, 1, 2, 0))} expected 0 0 1 2 2 2")
+    println("${dutchNationalFlagProblem(intArrayOf(2, 2, 1, 2))} expected 1 2 2 2")
+    println("${dutchNationalFlagProblem(intArrayOf(0, 1, 0))} expected 0 0 1")
+    println("${dutchNationalFlagProblem(intArrayOf(0, 1, 2,1,2,1,2,0))} expected 0 0 1 1 1 2 2 2")
 }
 
+/**
+ * Given an array containing 0s, 1s and 2s, sort the array in-place.
+ * You should treat numbers of the array as objects, hence, we can’t count 0s, 1s, and 2s to recreate the array.
+ */
+fun dutchNationalFlagProblem(arr: IntArray): List<Int> {
+    var left = 0
+    var right = arr.size-1
+    var i = 0
+    while(i <= right) {
+        val current = arr[i]
+        if(current == 0) {
+            val temp = arr[left]
+            arr[left] = current
+            arr[i] = temp
+            left++
+            i++
+        } else if(current == 2) {
+            val temp = arr[right]
+            arr[right] = current
+            arr[i] = temp
+            right--
+        } else i++
+
+    }
+    return arr.toList()
+}
 /**
  * Given an array with positive numbers and a target number,
  *   find all of its contiguous subarrays whose product is less than the target number.
